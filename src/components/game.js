@@ -1,26 +1,43 @@
 import './game.css'
 import { store } from '../store'
+import { winner } from '../helper'
 
 export const Game = () => {
+  let win = ''
   const { cellsArray, player } = store.getState()
   const startNewGame = () => {
     store.dispatch({ type: 'RESET_GAME', payload: '' })
-    // console.log('RESET_GAME')
   }
 
   const handleClick = (index) => {
-    console.log('handleClick', player, cellsArray)
-    let temp
+    const { cellsArray, player } = store.getState()
+    let currentPlayer
     if (cellsArray[index] === null) {
-      cellsArray[index] = player
-      temp = !player
+      if (player) {
+        cellsArray[index] = 'X'
+      } else {
+        cellsArray[index] = 'O'
+      }
+      currentPlayer = !player
+    } else {
+      return
     }
 
-    store.dispatch({ type: 'MOVE_PLAYER', payload: temp })
-    // console.log('MOVE_PLAYER', index)
+    store.dispatch({
+      type: 'MOVE_PLAYER',
+      payload: currentPlayer,
+    })
+    if (winner(cellsArray)) {
+      win = winner(cellsArray)
+      return win
+    }
   }
   const isMove = () => {
-    return <div className="whoseMove">Текущий ход: {player ? 'X' : 'O'}</div>
+    return win ? (
+      <div className="whoseMove">Победил: {win}</div>
+    ) : (
+      <div className="whoseMove">Текущий ход: {player ? 'X' : 'O'}</div>
+    )
   }
 
   return (

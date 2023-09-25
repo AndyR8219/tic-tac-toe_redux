@@ -6,7 +6,6 @@ const createStore = (reducer) => {
   return {
     dispatch: (action) => {
       state = reducer(state, action)
-      console.log('state ', state)
       subscribers.forEach((sub) => sub())
     },
     subscribe: (callback) => {
