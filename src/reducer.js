@@ -2,6 +2,7 @@ export const initialState = {
   cellsArray: Array(9).fill(null),
   player: true,
   currentMove: 'Текущий ход: ',
+  draw: false,
 }
 
 export const rootReducer = (state = initialState, action) => {
@@ -24,7 +25,12 @@ export const rootReducer = (state = initialState, action) => {
         player: payload.player,
       }
     }
-
+    case 'DRAW': {
+      return {
+        ...state,
+        draw: payload,
+      }
+    }
     default:
       return state
   }

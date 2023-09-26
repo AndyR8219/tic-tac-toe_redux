@@ -3,7 +3,7 @@ import { store } from '../store'
 import { winner } from '../helper'
 
 export const Game = () => {
-  const { cellsArray, player, currentMove } = store.getState()
+  const { cellsArray, player, currentMove, draw } = store.getState()
   const startNewGame = () => {
     store.dispatch({ type: 'RESET_GAME', payload: '' })
   }
@@ -21,8 +21,6 @@ export const Game = () => {
         cellsArray[index] = 'O'
       }
       currentPlayer = !player
-    } else if (!winner(cellsArray) && !cellsArray.includes(null)) {
-      currentMove = 'Ничья '
     } else {
       return
     }
@@ -37,10 +35,18 @@ export const Game = () => {
         payload: { player, currentMove },
       })
     }
+    if (!winner(cellsArray) && !cellsArray.includes(null)) {
+      store.dispatch({
+        type: 'DRAW',
+        payload: true,
+      })
+    }
   }
 
   const isMove = () => {
-    return (
+    return draw ? (
+      <div className="whoseMove">Ничья</div>
+    ) : (
       <div className="whoseMove">
         {currentMove} {player ? 'X' : 'O'}
       </div>
@@ -53,12 +59,7 @@ export const Game = () => {
       </button>
       <div className="container">
         {cellsArray.map((square, i) => (
-          <button
-            key={i}
-            className="square"
-            onClick={() => handleClick(i)}
-            // disabled={isDisabled}
-          >
+          <button key={i} className="square" onClick={() => handleClick(i)}>
             {square}
           </button>
         ))}
